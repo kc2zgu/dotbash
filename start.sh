@@ -4,14 +4,73 @@
 
 BASHD="${HOME}/.bash.d"
 
+# check if interactive
+IS_INTERACTIVE=0
+if [[ $- = *i* ]] ; then
+    IS_INTERACTIVE=1
+fi
+PP_CMD=`ps --no-headers -o comm $PPID`
+
 # get logging functions
 
 if [ -f /lib/gentoo/functions.sh ]; then
     . /lib/gentoo/functions.sh
-    einfo "Found gentoo functions.sh"
+    #einfo "Found gentoo functions.sh"
 else
-    echo "No gentoo functions"
+    # hard-coded standard color codes (skip tput detection)
+    GOOD=$(printf '\033[32;01m')
+    WARN=$(printf '\033[33;01m')
+    BAD=$(printf '\033[31;01m')
+    NORMAL=$(printf '\033[0m')
+
+    # Display an informational message
+    einfo()
+    {
+        echo " ${GOOD}*${NORMAL} $*"
+    }
+
+    # Display a warning message
+    ewarn()
+    {
+        echo " ${WARN}*${NORMAL} $*"
+    }
+
+    # Display an erorr message, and return failure
+    eerror()
+    {
+        echo " ${BAD}*${NORMAL} $*"
+        return 1
+    }
+
+    # Start an operation, displaying a message
+    ebegin()
+    {
+        echo -n " ${GOOD}*${NORMAL} $* ... "
+    }
+
+    # Display the status of the operation started with ebegin
+    eend()
+    {
+        if [ "${1:-0}" = "0" ]; then
+            echo "${GOOD}[ ok ]${NORMAL}"
+        else
+            echo "${BAD}[ !! ]${NORMAL}"
+        fi
+    }
 fi
+
+debug()
+{
+    echo "[bash:$$] $*" >> /tmp/bash.$$.log
+}
+
+dumpdebug()
+{
+    cat /tmp/bash.$$.log
+}
+
+debug "parent command: $PPID $PP_CMD"
+debug "interactive: $IS_INTERACTIVE"
 
 # read shell config bits
 
@@ -54,3 +113,16 @@ for PROMPT in $PROMPTD; do
 done
 
 unset PROMPTD
+
+# read application bits
+
+APPD="${BASHD}/app-*.sh"
+
+for APP in $APPD; do
+    if [ -f $APP ]; then
+        einfo "Running $APP"
+        . $APP
+    fi
+done
+
+unset APPD
