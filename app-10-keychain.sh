@@ -9,11 +9,11 @@ KC_TIMEOUT=360
 
 if which keychain >/dev/null 2>&1; then
     alias kc="keychain --timeout $KC_TIMEOUT $KC_KEYS --host $HOSTNAME"
-    einfo "Loaded keychain alias"
 
     if [ $IS_INTERACTIVE = 1 ]; then
         keychain --timeout $KC_TIMEOUT $KC_KEYS --host $HOSTNAME
     else
+        debug "non-interactive keychain start"
         keychain -q --host $HOSTNAME
     fi
 

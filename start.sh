@@ -72,13 +72,22 @@ dumpdebug()
 debug "parent command: $PPID $PP_CMD"
 debug "interactive: $IS_INTERACTIVE"
 
+HAVE_X=0
+if [ -n "$DISPLAY" ]; then
+    HAVE_X=1
+fi
+HAVE_TTY=0
+if tty > /dev/null; then
+    HAVE_TTY=1
+fi
+
 # read shell config bits
 
 SHCONFD="${BASHD}/config-*.sh"
 
 for CONF in $SHCONFD; do
     if [ -f $CONF ]; then
-        einfo "Running $CONF"
+        debug "Running $CONF"
         . $CONF
     fi
 done
@@ -91,7 +100,7 @@ ENVD="${BASHD}/env-*.sh"
 
 for ENV in $ENVD; do
     if [ -f $ENV ]; then
-        einfo "Running $ENV"
+        debug "Running $ENV"
         . $ENV
     fi
 done
@@ -100,19 +109,21 @@ unset ENVD
 
 # read prompt bits
 
-PROMPTD="${BASHD}/prompt-*.sh"
-PROMPT_FINAL=0
+if [ $IS_INTERACTIVE = 1 ]; then
+    PROMPTD="${BASHD}/prompt-*.sh"
+    PROMPT_FINAL=0
 
-for PROMPT in $PROMPTD; do
-    if [ $PROMPT_FINAL = 0 ]; then
-        if [ -f $PROMPT ]; then
-            einfo "Running $PROMPT"
-            . $PROMPT
+    for PROMPT in $PROMPTD; do
+        if [ $PROMPT_FINAL = 0 ]; then
+            if [ -f $PROMPT ]; then
+                debug "Running $PROMPT"
+                . $PROMPT
+            fi
         fi
-    fi
-done
+    done
 
-unset PROMPTD
+    unset PROMPTD
+fi
 
 # read application bits
 
@@ -120,7 +131,7 @@ APPD="${BASHD}/app-*.sh"
 
 for APP in $APPD; do
     if [ -f $APP ]; then
-        einfo "Running $APP"
+        debug "Running $APP"
         . $APP
     fi
 done
