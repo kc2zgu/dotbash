@@ -92,7 +92,7 @@ for CONF in $SHCONFD; do
     fi
 done
 
-unset SHCONFD
+unset SHCONFD CONF
 
 # read environment bits
 
@@ -105,7 +105,7 @@ for ENV in $ENVD; do
     fi
 done
 
-unset ENVD
+unset ENVD ENV
 
 # read prompt bits
 
@@ -122,7 +122,7 @@ if [ $IS_INTERACTIVE = 1 ]; then
         fi
     done
 
-    unset PROMPTD
+    unset PROMPTD PROMPT
 fi
 
 # read application bits
@@ -136,4 +136,5 @@ for APP in $APPD; do
     fi
 done
 
-unset APPD
+unset APPD APP
+unset PROMPT_FINAL
