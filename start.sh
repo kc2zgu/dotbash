@@ -125,6 +125,9 @@ if [ $IS_INTERACTIVE = 1 ]; then
     unset PROMPTD PROMPT
 fi
 
+# save exit status in another var so functions in PS1 don't clobber it
+PROMPT_COMMAND=("PROMPT_STATUS=\$?")
+
 # read application bits
 
 APPD="${BASHD}/app-*.sh"
