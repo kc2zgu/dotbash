@@ -5,7 +5,11 @@ fi
 OS=`uname -s`
 KERN=`uname -r`
 TTY=`tty`
-UP=`uptime -p`
+if [ $OS = "FreeBSD" ]; then
+    UP=`uptime |grep -oE 'up [^,]+'`
+else
+    UP=`uptime -p`
+fi
 einfo "Welcome to $HOSTNAME running $OS $KERN"
 einfo "on $TTY, $UP"
 unset OS

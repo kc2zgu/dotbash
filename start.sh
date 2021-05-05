@@ -2,14 +2,20 @@
 
 # paths
 
-BASHD="${HOME}/.bash.d"
+if [ -z "$BASHD" ]; then
+    BASHD="${HOME}/.bash.d"
+fi
 
 # check if interactive
 IS_INTERACTIVE=0
 if [[ $- = *i* ]] ; then
     IS_INTERACTIVE=1
 fi
-PP_CMD=`ps --no-headers -o comm $PPID`
+if [ $(uname -s) = "FreeBSD" ]; then
+    PP_CMD=`ps -o comm= -p $PPID`
+else
+    PP_CMD=`ps --no-headers -o comm $PPID`
+fi
 
 # get logging functions
 
