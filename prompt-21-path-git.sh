@@ -1,7 +1,7 @@
 git_prompt()
 {
-    local GITBRANCH="$(git branch --show-current 2> /dev/null)"
-    if [ -n "$GITBRANCH" ]; then
+    if git branch --show-current > /dev/null 2>&1; then
+        local GITBRANCH="$(git branch --show-current 2> /dev/null)"
         local GITSTATUS="$(git status --porcelain 2> /dev/null)"
         local GITCHANGES
         local GITCHANGECOUNT="$(grep -c '^.M' <<< $GITSTATUS)"
@@ -11,6 +11,9 @@ git_prompt()
         local GITADDCOUNT="$(grep -c '^[AM] ' <<< $GITSTATUS)"
         if [ $GITADDCOUNT != 0 ]; then
             GITCHANGES="$GITCHANGES ${GITADDCOUNT}+"
+        fi
+        if [ -z $GITBRANCH ]; then # detached HEAD
+            GITBRANCH="</>"
         fi
         echo "[git:$GITBRANCH$GITCHANGES] "
     fi
