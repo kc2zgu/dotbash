@@ -3,6 +3,7 @@ if [ -d ~/perl5 ]; then
     if [ $? -eq 0 ]; then
         eval "$LL_VARS"
     else
+        debug "perl local::lib not installed"
         ewarn "~/perl5 found but local::lib not installed"
     fi
 
