@@ -19,4 +19,6 @@ git_prompt()
     fi
 }
 
+export -f git_prompt
+
 PROMPT_PATH="${PROMPT_PATH}\$(git_prompt)"
