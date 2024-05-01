@@ -1,1 +1,3 @@
-export EDITOR=~/bin/edit.sh
+MYEDITOR=~/bin/edit.sh
+
+[ -x $MYEDITOR ] && export EDITOR=$MYEDITOR
