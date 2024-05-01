@@ -65,9 +65,11 @@ else
     }
 fi
 
+BASHD_DEBUG=0
+
 debug()
 {
-    echo "[bash:$$] $*" >> /tmp/bash.$$.log
+    [ $BASHD_DEBUG = "1" ] && echo "[bash:$$] $*" >> /tmp/bash.$$.log
 }
 
 dumpdebug()
@@ -147,3 +149,7 @@ done
 
 unset APPD APP
 unset PROMPT_FINAL
+
+unset debug
+[ $BASHD_DEBUG = "0" ] && unset dumpdebug
+true
